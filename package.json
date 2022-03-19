@@ -3,12 +3,13 @@
   "scripts": {
     "dev": "vite --port 3333 --open",
     "build": "vite build",
-    "build-ssg":"vite-ssg build",
+    "build-ssg": "vite-ssg build",
     "preview": "vite preview",
     "lint": "eslint . --ext=.ts,.vue",
     "test": "vitest"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^1.30.4",
     "@vueuse/core": "^7.5.3",
     "vue": "^3.2.26"
   },
