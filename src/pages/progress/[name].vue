@@ -5,18 +5,19 @@ import { supabase } from '../../api/supabase'
 const props = defineProps<{ name: string }>()
 const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN
 
-const commitGoals = ref(0)
-const prGoals = ref(0)
-const issueGoals = ref(0)
-const ghData = ref({})
-const avatarUrl = ref('')
-const bio = ref('')
-const currentCommitCount = ref(0)
-const currentIssueCount = ref(0)
-const currentPrCount = ref(0)
-const commitPercent = ref(0)
-const prPercent = ref(0)
-const issuePercent = ref(0)
+const userData = ref({
+  commitGoals: 0,
+  prGoals: 0,
+  issueGoals: 0,
+  avatarUrl: '',
+  bio: '',
+  currentCommitCount: 0,
+  currentPrCount: 0,
+  currentIssueCount: 0,
+  commitPercent: 0,
+  prPercent: 0,
+  issuePercent: 0,
+})
 
 async function getUser() {
   try {
@@ -45,20 +46,20 @@ async function getUser() {
     },
     )).json()
     if (data && ghData) {
-      commitGoals.value = data.commit_goals
-      prGoals.value = data.pr_goals
-      issueGoals.value = data.issue_goals
-      avatarUrl.value = ghData.user.avatarUrl
-      bio.value = ghData.user.bio
-      currentCommitCount.value = ghData.user.contributionsCollection.totalCommitContributions
-      currentIssueCount.value = ghData.user.contributionsCollection.totalIssueContributions
-      currentPrCount.value = ghData.user.contributionsCollection.totalPullRequestContributions
-      commitPercent.value = Math.round((currentCommitCount.value / commitGoals.value) * 100)
-      prPercent.value = Math.round((currentPrCount.value / prGoals.value) * 100)
-      issuePercent.value = Math.round((currentIssueCount.value / issueGoals.value) * 100)
+      userData.value.commitGoals = data.commit_goals
+      userData.value.prGoals = data.pr_goals
+      userData.value.issueGoals = data.issue_goals
+      userData.value.avatarUrl = ghData.user.avatarUrl
+      userData.value.bio = ghData.user.bio
+      userData.value.currentCommitCount = ghData.user.contributionsCollection.totalCommitContributions
+      userData.value.currentIssueCount = ghData.user.contributionsCollection.totalIssueContributions
+      userData.value.commitPercent = Math.round((userData.value.currentCommitCount / userData.value.commitGoals) * 100)
+      userData.value.currentPrCount = ghData.user.contributionsCollection.totalPullRequestContributions
+      userData.value.prPercent = Math.round((userData.value.currentPrCount / userData.value.prGoals) * 100)
+      userData.value.issuePercent = Math.round((userData.value.currentIssueCount / userData.value.issueGoals) * 100)
     }
     else {
-      // TO Do: Display Register option
+      // TO Do: Display Register optionuser
     }
   }
   catch (error) {
@@ -77,7 +78,7 @@ onMounted(() => {
     <!-- Header Content -->
     <section flex>
       <img
-        :src="`${avatarUrl}`"
+        :src="`${userData.avatarUrl}`"
         :alt="`GitHub Avatar of ${props.name}`"
         w-32
         h-32
@@ -87,7 +88,7 @@ onMounted(() => {
       <div ml-4>
         <h1 text-4xl>{{ props.name }}</h1>
         <p text-md op50 mt-2 w-64>
-          <em>{{ bio }}</em>
+          <em>{{ userData.bio }}</em>
         </p>
       </div>
     </section>
@@ -102,28 +103,28 @@ onMounted(() => {
       <div flex justify-between m-auto>
         <div text-center py-8 rounded border-2 border-white flex-auto h-80 flex flex-col>
           <p flex-auto my-auto>
-            <span text-6xl>{{ commitPercent }}</span>%
+            <span text-6xl>{{ userData.commitPercent }}</span>%
           </p>
           <div>
-            <p>{{ currentCommitCount }} / {{ commitGoals }}</p>
+            <p>{{ userData.currentCommitCount }} / {{ userData.commitGoals }}</p>
             <p>Commits</p>
           </div>
         </div>
         <div text-center py-8 rounded border-2 border-white flex-auto h-80 flex flex-col>
           <p flex-auto>
-            <span text-6xl>{{ prPercent }}</span>%
+            <span text-6xl>{{ userData.prPercent }}</span>%
           </p>
           <div>
-            <p>{{ currentPrCount }} / {{ prGoals }}</p>
+            <p>{{ userData.currentPrCount }} / {{ userData.prGoals }}</p>
             <p>PR</p>
           </div>
         </div>
         <div text-center py-8 rounded border-2 border-white flex-auto h-80 flex flex-col>
           <p flex-auto>
-            <span text-6xl>{{ issuePercent }}</span>%
+            <span text-6xl>{{ userData.issuePercent }}</span>%
           </p>
           <div>
-            <p>{{ currentIssueCount }} / {{ issueGoals }}</p>
+            <p>{{ userData.currentIssueCount }} / {{ userData.issueGoals }}</p>
             <p>Issues</p>
           </div>
         </div>
